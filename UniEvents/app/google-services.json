@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "546863030917",
+    "project_id": "unievents-4bb06",
+    "storage_bucket": "unievents-4bb06.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:546863030917:android:378ee41cab720f45863fec",
+        "android_client_info": {
+          "package_name": "com.icm.unievents"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaZJaatNDnCRal9aEzkTtyjXm5oe1krgo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
