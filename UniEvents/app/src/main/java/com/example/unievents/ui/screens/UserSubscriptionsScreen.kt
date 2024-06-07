@@ -1,5 +1,4 @@
 package com.example.unievents.ui.screens
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,30 +17,29 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
-fun UserHomeScreen(navController: NavController) {
+fun UserSubscriptionsScreen(navController: NavController) {
     val eventRepository = remember { EventRepository() }
-    val events = remember { mutableStateOf(listOf<Event>()) }
+    val subscriptions = remember { mutableStateOf(listOf<Event>()) }
 
     LaunchedEffect(Unit) {
-        eventRepository.getEvents { eventList ->
-            events.value = eventList
+        eventRepository.getUserSubscriptions { eventList ->
+            subscriptions.value = eventList
         }
     }
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Home") })
+            TopAppBar(title = { Text("My Subscriptions") }, navigationIcon = {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                }
+            })
         }
     ) {
-        Column {
-            Button(onClick = { navController.navigate("userSubscriptions") }) {
-                Text("My Subscriptions")
-            }
-            LazyColumn {
-                items(events.value) { event ->
-                    EventItem(event = event) {
-                        navController.navigate("eventDetails/${event.id}")
-                    }
+        LazyColumn {
+            items(subscriptions.value) { event ->
+                EventItem(event = event) {
+                    navController.navigate("eventDetails/${event.id}")
                 }
             }
         }

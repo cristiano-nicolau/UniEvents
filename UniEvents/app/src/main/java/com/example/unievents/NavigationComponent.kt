@@ -4,11 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.unievents.ui.screens.AdminHomeScreen
-import com.example.unievents.ui.screens.LoginScreen
-import com.example.unievents.ui.screens.RegisterScreen
-import com.example.unievents.ui.screens.SplashScreen
-import com.example.unievents.ui.screens.UserHomeScreen
+import com.example.unievents.ui.screens.*
 
 @Composable
 fun NavigationComponent(navController: NavHostController) {
@@ -16,7 +12,16 @@ fun NavigationComponent(navController: NavHostController) {
         composable("splash") { SplashScreen(navController) }
         composable("login") { LoginScreen(navController) }
         composable("register") { RegisterScreen(navController) }
-        composable("userHome") { UserHomeScreen() }
-        composable("adminHome") { AdminHomeScreen() }
+        composable("userHome") { UserHomeScreen(navController) }
+        composable("adminHome") { AdminHomeScreen(navController) }
+        composable("eventDetails/{eventId}") { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getString("eventId")
+            if (eventId != null) {
+                EventDetailsScreen(navController, eventId)
+            }
+        }
+        composable("userSubscriptions") {
+            UserSubscriptionsScreen(navController)
+        }
     }
 }
