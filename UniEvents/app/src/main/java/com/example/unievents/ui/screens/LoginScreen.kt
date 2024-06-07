@@ -59,7 +59,7 @@ fun LoginScreen(navController: NavController) {
             Text("Forgot Password?")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(
+        /*Button(
             onClick = { AuthRepository.loginUser(navController, email.value, password.value) { success ->
                 if (!success) {
                     // Handle error
@@ -68,8 +68,8 @@ fun LoginScreen(navController: NavController) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("LOG IN")
-        }
-        Spacer(modifier = Modifier.height(8.dp))
+        }*/
+        Spacer(modifier = Modifier.height(12.dp))
         TextButton(onClick = { navController.navigate("register") }) {
             Text("New User? Create Account")
         }

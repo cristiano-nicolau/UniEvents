@@ -45,6 +45,8 @@ class AuthRepository(
                                     navController.navigate("userHome")
                                 }
                                 onResult(true)
+                            } else {
+                                onResult(false)
                             }
                         }
                         .addOnFailureListener {

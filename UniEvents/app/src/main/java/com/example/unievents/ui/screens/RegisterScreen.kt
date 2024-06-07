@@ -63,7 +63,7 @@ fun RegisterScreen(navController: NavController) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Button(
+        /*Button(
             onClick = { AuthRepository.registerUser(email.value, password.value, "normal") { success ->
                 if (success) {
                     navController.navigate("login")
@@ -74,7 +74,7 @@ fun RegisterScreen(navController: NavController) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("SIGN UP")
-        }
+        }*/
         Spacer(modifier = Modifier.height(8.dp))
         TextButton(onClick = { navController.navigate("login") }) {
             Text("Already Have Account? Log In")

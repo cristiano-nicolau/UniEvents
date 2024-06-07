@@ -16,7 +16,7 @@ fun NavigationComponent(navController: NavHostController) {
         composable("splash") { SplashScreen(navController) }
         composable("login") { LoginScreen(navController) }
         composable("register") { RegisterScreen(navController) }
-        composable("userHome") { UserHomeScreen(navController) }
-        composable("adminHome") { AdminHomeScreen(navController) }
+        composable("userHome") { UserHomeScreen() }
+        composable("adminHome") { AdminHomeScreen() }
     }
 }
