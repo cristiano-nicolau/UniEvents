@@ -14,6 +14,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.unievents.data.AuthRepository
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -59,7 +60,11 @@ fun LoginScreen(navController: NavController) {
         }
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = { /* TODO: Implement Login with Firebase */ },
+            onClick = { AuthRepository.loginUser(navController, email.value, password.value) { success ->
+                if (!success) {
+                    // Handle error
+                }
+            } },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("LOG IN")
