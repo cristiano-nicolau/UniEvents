@@ -13,7 +13,7 @@ fun NavigationComponent(navController: NavHostController) {
         composable("login") { LoginScreen(navController) }
         composable("register") { RegisterScreen(navController) }
         composable("userHome") { UserHomeScreen(navController) }
-        composable("adminHome") { AdminHomeScreen(navController) }
+        composable("adminHome") { AdminHomeScreen() }
         composable("eventDetails/{eventId}") { backStackEntry ->
             val eventId = backStackEntry.arguments?.getString("eventId")
             if (eventId != null) {
