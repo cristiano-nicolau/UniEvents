@@ -16,7 +16,18 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import android.widget.Toast
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import com.example.unievents.data.Event
+import com.example.unievents.data.EventRepository
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserHomeScreen(navController: NavController) {
     val eventRepository = remember { EventRepository() }
@@ -32,9 +43,9 @@ fun UserHomeScreen(navController: NavController) {
         topBar = {
             TopAppBar(title = { Text("Home") })
         }
-    ) {
-        Column {
-            Button(onClick = { navController.navigate("userSubscriptions") }) {
+    ) { contentPadding ->
+        Column(modifier = Modifier.padding(contentPadding)) {
+            Button(onClick = { navController.navigate("myTickets") }) {
                 Text("My Subscriptions")
             }
             LazyColumn {
