@@ -48,6 +48,25 @@ class EventRepository(
             }
     }
 
+    fun unsubscribeFromEvent(eventId: String, callback: (Boolean) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return callback(false)
+        db.collection("subscriptions").whereEqualTo("userId", userId).whereEqualTo("eventId", eventId).get()
+            .addOnSuccessListener { result ->
+                val subscriptionId = result.firstOrNull()?.id ?: return callback(false)
+                db.collection("subscriptions").document(subscriptionId).delete()
+                    .addOnSuccessListener {
+                        db.collection("events").document(eventId).update("attendees", FieldValue.increment(-1))
+                        callback(true)
+                    }
+                    .addOnFailureListener {
+                        callback(false)
+                    }
+            }
+            .addOnFailureListener {
+                callback(false)
+            }
+    }
+
     fun getUserSubscriptions(onResult: (List<Event>) -> Unit) {
         val userId = auth.currentUser?.uid ?: return onResult(emptyList())
         db.collection("subscriptions").whereEqualTo("userId", userId).get()
