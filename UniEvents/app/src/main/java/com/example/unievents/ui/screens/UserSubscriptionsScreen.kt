@@ -69,7 +69,7 @@ fun UserSubscriptionsScreen(navController: NavController) {
                             }) {
                                 Text("Show Ticket")
                             }
-                            OutlinedButton(
+                            /*OutlinedButton(
                                 onClick = {
                                     eventRepository.unsubscribeFromEvent(event.id) { success ->
                                         if (success) {
@@ -85,7 +85,7 @@ fun UserSubscriptionsScreen(navController: NavController) {
                                 )
                             ) {
                                 Text("Unsubscribe")
-                            }
+                            }*/
                         }
                     }
                 }

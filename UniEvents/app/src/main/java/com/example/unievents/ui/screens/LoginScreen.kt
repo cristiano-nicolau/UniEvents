@@ -20,6 +20,7 @@ import com.example.unievents.data.AuthRepository
 fun LoginScreen(navController: NavController) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+    val authRepository = AuthRepository()
 
     Column(
         modifier = Modifier
@@ -59,8 +60,8 @@ fun LoginScreen(navController: NavController) {
             Text("Forgot Password?")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        /*Button(
-            onClick = { AuthRepository.loginUser(navController, email.value, password.value) { success ->
+        Button(
+            onClick = { authRepository.loginUser(navController, email.value, password.value) { success ->
                 if (!success) {
                     // Handle error
                 }
@@ -68,7 +69,7 @@ fun LoginScreen(navController: NavController) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("LOG IN")
-        }*/
+        }
         Spacer(modifier = Modifier.height(12.dp))
         TextButton(onClick = { navController.navigate("register") }) {
             Text("New User? Create Account")

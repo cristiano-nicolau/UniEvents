@@ -21,6 +21,7 @@ fun RegisterScreen(navController: NavController) {
     val username = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+    val authRepository = AuthRepository()
 
     Column(
         modifier = Modifier
@@ -63,18 +64,19 @@ fun RegisterScreen(navController: NavController) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
         )
         Spacer(modifier = Modifier.height(16.dp))
-        /*Button(
-            onClick = { AuthRepository.registerUser(email.value, password.value, "normal") { success ->
+        Button(
+            onClick = { authRepository.registerUser(email.value, password.value, "normal") { success ->
                 if (success) {
                     navController.navigate("login")
                 } else {
                     // Handle error
+                    print("Error at register")
                 }
             } },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("SIGN UP")
-        }*/
+        }
         Spacer(modifier = Modifier.height(8.dp))
         TextButton(onClick = { navController.navigate("login") }) {
             Text("Already Have Account? Log In")

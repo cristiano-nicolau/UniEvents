@@ -8,7 +8,7 @@ class EventRepository(
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance(),
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 ) {
-    fun createEvent(event: Event, onResult: (Boolean) -> Unit) {
+    /*fun createEvent(event: Event, onResult: (Boolean) -> Unit) {
         val eventId = db.collection("events").document().id
         event.id = eventId
         event.organizer = getCurrentUser()  // Adicione o organizador atual
@@ -19,7 +19,7 @@ class EventRepository(
             .addOnFailureListener {
                 onResult(false)
             }
-    }
+    }*/
 
     fun getEvents(onResult: (List<Event>) -> Unit) {
         db.collection("events").get()
@@ -48,7 +48,7 @@ class EventRepository(
             }
     }
 
-    fun unsubscribeFromEvent(eventId: String, callback: (Boolean) -> Unit) {
+    /*fun unsubscribeFromEvent(eventId: String, callback: (Boolean) -> Unit) {
         val userId = auth.currentUser?.uid ?: return callback(false)
         db.collection("subscriptions").whereEqualTo("userId", userId).whereEqualTo("eventId", eventId).get()
             .addOnSuccessListener { result ->
@@ -65,7 +65,7 @@ class EventRepository(
             .addOnFailureListener {
                 callback(false)
             }
-    }
+    }*/
 
     fun getUserSubscriptions(onResult: (List<Event>) -> Unit) {
         val userId = auth.currentUser?.uid ?: return onResult(emptyList())
