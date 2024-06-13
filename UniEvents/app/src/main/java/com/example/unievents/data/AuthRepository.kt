@@ -8,7 +8,7 @@ class AuthRepository(
     private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 ) {
-    fun registerUser(email: String, password: String, role: String, onResult: (Boolean) -> Unit) {
+    fun registerUser(navController: NavController, email: String, password: String, role: String, onResult: (Boolean) -> Unit) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -19,7 +19,10 @@ class AuthRepository(
                     )
                     db.collection("users").document(userId).set(user)
                         .addOnSuccessListener {
-                            onResult(true)
+                            // Automatically log in the user after registration
+                            loginUser(navController, email, password) { loginSuccess ->
+                                onResult(loginSuccess)
+                            }
                         }
                         .addOnFailureListener {
                             onResult(false)

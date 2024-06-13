@@ -65,9 +65,10 @@ fun RegisterScreen(navController: NavController) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = { authRepository.registerUser(email.value, password.value, "normal") { success ->
+            onClick = { authRepository.registerUser(navController,email.value, password.value, "normal") { success ->
                 if (success) {
-                    navController.navigate("login")
+                    //navController.navigate("login")
+                    print("Success at register")
                 } else {
                     // Handle error
                     print("Error at register")
