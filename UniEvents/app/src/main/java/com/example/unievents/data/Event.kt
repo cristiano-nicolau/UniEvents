@@ -3,7 +3,7 @@ package com.example.unievents.data
 import com.google.firebase.Timestamp
 
 data class Event(
-    val id: String = "",
+    var id: String = "",
     val name: String = "",
     val date: String = "",
     val time: String = "",

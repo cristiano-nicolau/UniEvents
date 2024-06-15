@@ -24,12 +24,32 @@ class EventRepository(
     fun getEvents(onResult: (List<Event>) -> Unit) {
         db.collection("events").get()
             .addOnSuccessListener { result ->
-                val events = result.mapNotNull { it.toObject(Event::class.java) }
+                val events = result.documents.mapNotNull { document ->
+                    document.toObject(Event::class.java)?.apply {
+                        id = document.id // Define o ID do documento como o ID do evento
+                    }
+                }
                 onResult(events)
             }
             .addOnFailureListener { e ->
                 println("Error fetching events: ${e.message}")
                 onResult(emptyList())
+            }
+    }
+
+    fun getEventsFromFirestore() {
+        val eventsCollection = db.collection("events")
+        eventsCollection.get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val eventId = document.id // Aqui está o ID do documento
+                    val event = document.toObject(Event::class.java)
+                    // Agora você pode usar eventId para navegar para os detalhes do evento
+                    // Exemplo: navController.navigate("eventDetails/$eventId")
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Tratar falhas na leitura dos documentos
             }
     }
 

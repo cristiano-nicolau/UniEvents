@@ -1,5 +1,6 @@
 package com.example.unievents.data
 
+import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -19,7 +20,6 @@ class AuthRepository(
                     )
                     db.collection("users").document(userId).set(user)
                         .addOnSuccessListener {
-                            // Automatically log in the user after registration
                             loginUser(navController, email, password) { loginSuccess ->
                                 onResult(loginSuccess)
                             }
