@@ -56,7 +56,7 @@ fun UserSubscriptionsScreen(navController: NavController) {
                         .clickable { navController.navigate("eventDetails/${event.id}") }
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text(event.title, style = MaterialTheme.typography.headlineSmall)
+                        Text(event.name, style = MaterialTheme.typography.headlineSmall)
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(event.location, style = MaterialTheme.typography.bodyMedium)
                         Spacer(modifier = Modifier.height(4.dp))

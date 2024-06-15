@@ -24,10 +24,11 @@ class EventRepository(
     fun getEvents(onResult: (List<Event>) -> Unit) {
         db.collection("events").get()
             .addOnSuccessListener { result ->
-                val events = result.map { it.toObject(Event::class.java) }
+                val events = result.mapNotNull { it.toObject(Event::class.java) }
                 onResult(events)
             }
-            .addOnFailureListener {
+            .addOnFailureListener { e ->
+                println("Error fetching events: ${e.message}")
                 onResult(emptyList())
             }
     }

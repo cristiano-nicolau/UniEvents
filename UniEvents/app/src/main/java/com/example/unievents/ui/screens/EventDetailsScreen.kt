@@ -46,7 +46,7 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                     .padding(16.dp)
                     .fillMaxSize()
             ) {
-                Text(eventDetails.title, style = MaterialTheme.typography.headlineLarge)
+                Text(eventDetails.name, style = MaterialTheme.typography.headlineLarge)
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(eventDetails.description, style = MaterialTheme.typography.bodyLarge)
                 Spacer(modifier = Modifier.height(8.dp))
@@ -56,7 +56,7 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text("Location: ${eventDetails.location}", style = MaterialTheme.typography.bodyMedium)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("Organizer: ${eventDetails.organizer.name}", style = MaterialTheme.typography.bodyMedium)
+                Text("Organizer: ${eventDetails.organizer}", style = MaterialTheme.typography.bodyMedium)
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(onClick = {
                     eventRepository.subscribeToEvent(eventId) { success ->
