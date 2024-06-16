@@ -26,7 +26,7 @@ class EventRepository(
             .addOnSuccessListener { result ->
                 val events = result.documents.mapNotNull { document ->
                     document.toObject(Event::class.java)?.apply {
-                        id = document.id // Define o ID do documento como o ID do evento
+                        id = document.id
                     }
                 }
                 onResult(events)
@@ -37,56 +37,7 @@ class EventRepository(
             }
     }
 
-    fun getEventsFromFirestore() {
-        val eventsCollection = db.collection("events")
-        eventsCollection.get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    val eventId = document.id // Aqui está o ID do documento
-                    val event = document.toObject(Event::class.java)
-                    // Agora você pode usar eventId para navegar para os detalhes do evento
-                    // Exemplo: navController.navigate("eventDetails/$eventId")
-                }
-            }
-            .addOnFailureListener { exception ->
-                // Tratar falhas na leitura dos documentos
-            }
-    }
 
-    fun subscribeToEvent(eventId: String, onResult: (Boolean) -> Unit) {
-        val userId = auth.currentUser?.uid ?: return onResult(false)
-        val subscription = hashMapOf(
-            "userId" to userId,
-            "eventId" to eventId
-        )
-        db.collection("subscriptions").add(subscription)
-            .addOnSuccessListener {
-                db.collection("events").document(eventId).update("attendees", FieldValue.increment(1))
-                onResult(true)
-            }
-            .addOnFailureListener {
-                onResult(false)
-            }
-    }
-
-    /*fun unsubscribeFromEvent(eventId: String, callback: (Boolean) -> Unit) {
-        val userId = auth.currentUser?.uid ?: return callback(false)
-        db.collection("subscriptions").whereEqualTo("userId", userId).whereEqualTo("eventId", eventId).get()
-            .addOnSuccessListener { result ->
-                val subscriptionId = result.firstOrNull()?.id ?: return callback(false)
-                db.collection("subscriptions").document(subscriptionId).delete()
-                    .addOnSuccessListener {
-                        db.collection("events").document(eventId).update("attendees", FieldValue.increment(-1))
-                        callback(true)
-                    }
-                    .addOnFailureListener {
-                        callback(false)
-                    }
-            }
-            .addOnFailureListener {
-                callback(false)
-            }
-    }*/
 
     fun getUserSubscriptions(onResult: (List<Event>) -> Unit) {
         val userId = auth.currentUser?.uid ?: return onResult(emptyList())

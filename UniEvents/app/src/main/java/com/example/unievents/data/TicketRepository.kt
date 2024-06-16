@@ -1,6 +1,7 @@
 package com.example.unievents.data
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
 
@@ -21,10 +22,42 @@ class TicketRepository(
 
         db.collection("tickets").document(ticketId).set(ticket)
             .addOnSuccessListener {
+                // adiciona o id do user aos atendentes do evento
+                db.collection("events").document(eventId).update("attendees", FieldValue.arrayUnion(userId))
                 onResult(true)
             }
             .addOnFailureListener {
                 onResult(false)
+            }
+    }
+
+    fun unsubscribeFromEvent(eventId: String, callback: (Boolean) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return callback(false)
+        db.collection("tickets").whereEqualTo("eventId", eventId).whereEqualTo("userId", userId).get()
+            .addOnSuccessListener { result ->
+                val ticketId = result.firstOrNull()?.id ?: return@addOnSuccessListener callback(false)
+                db.collection("tickets").document(ticketId).delete()
+                    .addOnSuccessListener {
+                        db.collection("events").document(eventId).update("attendees", FieldValue.arrayRemove(userId))
+                        callback(true)
+                    }
+                    .addOnFailureListener {
+                        callback(false)
+                    }
+            }
+            .addOnFailureListener {
+                callback(false)
+            }
+    }
+
+    fun subscribedOnEventOrNot(eventId: String, callback: (Boolean) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return callback(false)
+        db.collection("tickets").whereEqualTo("eventId", eventId).whereEqualTo("userId", userId).get()
+            .addOnSuccessListener { result ->
+                callback(!result.documents.isEmpty())
+            }
+            .addOnFailureListener {
+                callback(false)
             }
     }
 
