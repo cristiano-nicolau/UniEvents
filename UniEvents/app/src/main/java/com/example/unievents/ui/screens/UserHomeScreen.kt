@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.unievents.data.Event
 import com.example.unievents.data.EventRepository
+import com.example.unievents.data.TicketRepository
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -41,6 +42,7 @@ import java.util.Locale
 @Composable
 fun UserHomeScreen(navController: NavController) {
     val eventRepository = remember { EventRepository() }
+    val ticketRepository = remember { TicketRepository() }
     val events = remember { mutableStateOf(listOf<Event>()) }
     val monthEvents = remember { mutableStateOf(listOf<Event>()) }
     val currentMonth = LocalDate.now().month
