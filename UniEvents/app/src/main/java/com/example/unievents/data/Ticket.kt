@@ -1,5 +1,7 @@
 package com.example.unievents.data
 
+import android.graphics.Bitmap
+
 data class Ticket(
     val id: String = "",
     val eventId: String = "",

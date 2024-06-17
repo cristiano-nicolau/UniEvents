@@ -1,5 +1,6 @@
 package com.example.unievents.ui.screens
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -18,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import android.widget.Toast
+import androidx.compose.ui.graphics.asImageBitmap
 import com.example.unievents.R
 import com.example.unievents.data.Event
 import com.example.unievents.data.EventRepository
@@ -32,6 +34,8 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
     val isSubscribed = remember { mutableStateOf(false) }
     val showConfirmationDialog = remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val showQrCodeDialog = remember { mutableStateOf(false) }
+    val qrCodeBitmap = remember { mutableStateOf<Bitmap?>(null) }
 
     LaunchedEffect(eventId) {
         eventRepository.getEvents { events ->
@@ -150,7 +154,15 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                 if (isSubscribed.value) {
                     Button(
                         onClick = {
-                            // Handle show ticket logic
+                            // Retrieve the ticket to get the QR code Base64 string
+                            ticketRepository.getTicket(eventDetails.id) { ticket ->
+                                if (ticket != null) {
+                                    qrCodeBitmap.value = ticketRepository.base64ToBitmap(ticket.qrCode)
+                                    showQrCodeDialog.value = true
+                                } else {
+                                    Toast.makeText(context, "Failed to retrieve ticket", Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         },
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
@@ -174,6 +186,27 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                     colors = ButtonDefaults.buttonColors(containerColor = if (isSubscribed.value) Color.Red else Color(0xFF00C853))
                 ) {
                     Text(if (isSubscribed.value) "UNSUBSCRIBE" else "SUBSCRIBE", style = MaterialTheme.typography.bodyLarge.copy(color = Color.White))
+                }
+
+                if (showQrCodeDialog.value) {
+                    AlertDialog(
+                        onDismissRequest = { showQrCodeDialog.value = false },
+                        title = { Text("Your Ticket QR Code") },
+                        text = {
+                            qrCodeBitmap.value?.let {
+                                Image(
+                                    bitmap = it.asImageBitmap(),
+                                    contentDescription = "QR Code",
+                                    modifier = Modifier.size(200.dp)
+                                )
+                            } ?: Text("QR Code could not be generated")
+                        },
+                        confirmButton = {
+                            Button(onClick = { showQrCodeDialog.value = false }) {
+                                Text("Close")
+                            }
+                        }
+                    )
                 }
 
                 if (showConfirmationDialog.value) {
