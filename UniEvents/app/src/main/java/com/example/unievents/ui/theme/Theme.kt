@@ -30,6 +30,7 @@ private val LightColorScheme = lightColorScheme(
     onSecondary = OnSecondaryColor,
     onBackground = OnBackgroundColor,
     onSurface = OnSurfaceColor,
+    error = ErrorColor,
 )
 
 @Composable

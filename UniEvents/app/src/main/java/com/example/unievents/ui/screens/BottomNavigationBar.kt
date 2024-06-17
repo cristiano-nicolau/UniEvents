@@ -35,8 +35,8 @@ data class BottomNavItem(val label: String, val icon: ImageVector, val route: St
 fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
         BottomNavItem("Home", Icons.Default.Home, "userHome"),
-        BottomNavItem("My Tickets", Icons.Default.DateRange, "myTickets"),
-        BottomNavItem("Profile", Icons.Default.Person, "profile"),
+        BottomNavItem("My Tickets", Icons.Default.DateRange, "userSubscriptions"),
+        BottomNavItem("Profile", Icons.Default.Person, "userProfile"),
     )
 
     NavigationBar(
