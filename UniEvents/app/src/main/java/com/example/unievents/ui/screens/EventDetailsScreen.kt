@@ -92,6 +92,14 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                         text = eventDetails.date,
                         style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
                     )
+                    Text(
+                        text = " | ",
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
+                    )
+                    Text(
+                        text = eventDetails.time,
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
+                    )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
@@ -136,18 +144,29 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .fillMaxWidth()
                         .background(Color.LightGray, shape = RoundedCornerShape(8.dp))
                         .padding(16.dp)
                 ) {
-                    Icon(Icons.Default.Person, contentDescription = "Capacity")
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Capacity: ${eventDetails.capacity} Users",
-                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Person, contentDescription = "Capacity")
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Capacity: ${eventDetails.capacity} Users",
+                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
+                        )
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Person, contentDescription = "Going")
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "+${eventDetails.attendeesCount} Going",
+                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -166,9 +185,11 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                         },
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .padding(horizontal = 32.dp)
-                            .fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00C853))
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth()
+                            .background( MaterialTheme.colorScheme.secondary,RoundedCornerShape(8.dp)),
+                          colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+
                     ) {
                         Text("SHOW TICKET", style = MaterialTheme.typography.bodyLarge.copy(color = Color.White))
                     }
@@ -181,9 +202,10 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                     },
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
-                        .padding(horizontal = 32.dp)
-                        .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = if (isSubscribed.value) Color.Red else Color(0xFF00C853))
+                        .padding(horizontal = 16.dp)
+                        .fillMaxWidth()
+                        .background( if (isSubscribed.value) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary,RoundedCornerShape(8.dp)),
+                    colors = ButtonDefaults.buttonColors(containerColor = if (isSubscribed.value) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary)
                 ) {
                     Text(if (isSubscribed.value) "UNSUBSCRIBE" else "SUBSCRIBE", style = MaterialTheme.typography.bodyLarge.copy(color = Color.White))
                 }
@@ -211,15 +233,23 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
 
                 if (showConfirmationDialog.value) {
                     AlertDialog(
+                        modifier = Modifier
+                            .background(Color.White, shape = RoundedCornerShape(12.dp)),
                         onDismissRequest = { showConfirmationDialog.value = false },
                         title = {
-                            Text("CONFIRM SUBSCRIPTION")
+                            Text("CONFIRM ${if (isSubscribed.value) "UNSUBSCRIPTION" else "SUBSCRIPTION"}",
+                                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+                            )
                         },
                         text = {
-                            Text("Are you sure you want to ${if (isSubscribed.value) "unsubscribe from" else "subscribe to"} this event?")
+                            Text("Are you sure you want to ${if (isSubscribed.value) "unsubscribe from" else "subscribe to"} this event?",
+                                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
+                            )
                         },
                         confirmButton = {
                             TextButton(
+                                modifier = Modifier.weight(5f).background( if (isSubscribed.value) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(12.dp)),
+                                colors = ButtonDefaults.buttonColors(containerColor  = if (isSubscribed.value) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary),
                                 onClick = {
                                     if (isSubscribed.value) {
                                         ticketRepository.unsubscribeFromEvent(eventDetails.id) { success ->
@@ -248,7 +278,12 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                             }
                         },
                         dismissButton = {
-                            TextButton(onClick = { showConfirmationDialog.value = false }) {
+                            TextButton(
+                                modifier = Modifier.weight(5f).background( Color.LightGray, shape = RoundedCornerShape(12.dp)),
+                                colors = ButtonDefaults.buttonColors(contentColor  = if (isSubscribed.value) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary, containerColor = Color.LightGray),
+                                onClick = { showConfirmationDialog.value = false }
+                            ) {
+
                                 Text("Cancel")
                             }
                         }
