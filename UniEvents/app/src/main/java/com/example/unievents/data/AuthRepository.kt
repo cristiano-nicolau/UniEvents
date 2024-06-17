@@ -16,7 +16,9 @@ class AuthRepository(
                     val userId = task.result?.user?.uid ?: return@addOnCompleteListener
                     val user = hashMapOf(
                         "email" to email,
-                        "role" to role
+                        "role" to role,
+                        "latitude" to 0.0,
+                        "longitude" to 0.0
                     )
                     db.collection("users").document(userId).set(user)
                         .addOnSuccessListener {
