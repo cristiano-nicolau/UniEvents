@@ -37,6 +37,7 @@ fun BottomNavigationBar(navController: NavController) {
         BottomNavItem("Home", Icons.Default.Home, "userHome"),
         BottomNavItem("My Tickets", Icons.Default.DateRange, "userSubscriptions"),
         BottomNavItem("Profile", Icons.Default.Person, "userProfile"),
+        BottomNavItem("Map", Icons.Default.Person, "map")
     )
 
     NavigationBar(

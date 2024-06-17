@@ -24,6 +24,7 @@ import com.example.unievents.ui.screens.UserHomeScreen
 import com.example.unievents.ui.screens.UserProfile
 import com.example.unievents.ui.screens.UserSubscriptionsScreen
 import com.example.unievents.ui.theme.UniEventsTheme
+import com.example.unievents.ui.screens.MapScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +63,7 @@ fun UniEventsApp() {
         composable("userSubscriptions") {
             UserSubscriptionsScreen(navController)
         }
+        composable("map") { MapScreen() }
     }
 }
 
