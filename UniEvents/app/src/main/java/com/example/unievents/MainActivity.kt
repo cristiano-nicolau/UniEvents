@@ -44,7 +44,7 @@ fun UniEventsApp() {
         composable("splash") { SplashScreen(navController) }
         composable("login") { LoginScreen(navController) }
         composable("register") { RegisterScreen(navController) }
-        composable("adminHome") { AdminHomeScreen() }
+        composable("adminHome") { AdminHomeScreen(navController) }
         composable("userProfile") { UserProfile(navController) }
         composable("userHome") { UserHomeScreen(navController) }
         composable("allEvents") {
