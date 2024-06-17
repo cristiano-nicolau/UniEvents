@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
@@ -62,16 +63,13 @@ fun AdminHomeScreen(navController: NavController) {
     }
 
     Scaffold(
-        bottomBar = {
-            BottomNavigationBar(navController = navController)
-        }
     ) { contentPadding ->
         Column(
             modifier = Modifier
                 .padding(contentPadding)
                 .padding(8.dp)
         ) {
-            SearchBarAdmin()
+            SearchBarAdmin(navController)
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "Events",style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold
@@ -90,7 +88,7 @@ fun AdminHomeScreen(navController: NavController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBarAdmin() {
+fun SearchBarAdmin(navController: NavController) {
     Row {
         // quero a parte abaixo e ao lado  outro icon
         TextField(
@@ -101,7 +99,7 @@ fun SearchBarAdmin() {
                 Icon(Icons.Default.Search, contentDescription = "Search")
             },
             modifier = Modifier
-                .fillMaxWidth()
+                .weight(1f)
                 .height(56.dp),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.Transparent,
@@ -111,13 +109,13 @@ fun SearchBarAdmin() {
         )
         IconButton(
             onClick = {
-                // Implementar ação de logout
+              //  navController.navigate("addEvent")
             },
             modifier = Modifier
                 .padding(start = 8.dp)
                 .size(56.dp)
         ) {
-            Icon(Icons.Default.Menu, contentDescription = "Menu")
+            Icon(Icons.Default.AddCircle, contentDescription = "Add Event")
         }
     }
 }

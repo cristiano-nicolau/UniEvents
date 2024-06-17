@@ -60,4 +60,20 @@ class AuthRepository(
                 }
             }
     }
+
+    fun getUser(onResult: (User?) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return onResult(null)
+        db.collection("users").document(userId).get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val user = document.toObject(User::class.java)
+                    onResult(user)
+                } else {
+                    onResult(null)
+                }
+            }
+            .addOnFailureListener {
+                onResult(null)
+            }
+    }
 }
