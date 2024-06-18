@@ -153,6 +153,9 @@ class TicketRepository(
 
     private fun fetchEmailsForTickets(tickets: List<Ticket>, onResult: (List<Ticket>) -> Unit) {
         val userIds = tickets.map { it.userId }
+        if (userIds.isEmpty()) {
+            return onResult(tickets)
+        }
         db.collection("users").whereIn(FieldPath.documentId(), userIds).get()
             .addOnSuccessListener { result ->
                 val emails = result.documents.associateBy({ it.id }, { it.getString("email") })

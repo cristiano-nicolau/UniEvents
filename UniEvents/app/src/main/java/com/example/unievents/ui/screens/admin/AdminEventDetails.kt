@@ -122,8 +122,19 @@ fun AdminEventDetails(navController: NavController ,eventId: String) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 LazyColumn {
-                    items(attendees.value) { ticket ->
-                        AttendeeItem(ticket)
+                    if (attendees.value.isNotEmpty()) {
+                        items(attendees.value) { ticket ->
+                            AttendeeItem(ticket)
+                        }
+                    } else {
+                        item {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("No attendees")
+                            }
+                        }
                     }
                 }
 
