@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,10 +36,10 @@ import com.google.android.gms.location.LocationRequest
 
 
 @Composable
-fun MapScreen() {
+fun MapScreen(latitude : Double, longitude : Double, userLatitude: MutableState<Double?>, userLongitude: MutableState<Double?>) {
     val context = LocalContext.current
     val cameraPositionState = rememberCameraPositionState {
-        position = com.google.android.gms.maps.model.CameraPosition.fromLatLngZoom(LatLng(-34.0, 151.0), 10f)
+        position = com.google.android.gms.maps.model.CameraPosition.fromLatLngZoom(LatLng(latitude, longitude), 10f)
     }
 
     val hasLocationPermission = remember {
@@ -83,12 +84,12 @@ fun MapScreen() {
                 properties = MapProperties(isMyLocationEnabled = true)
             ) {
                 Marker(
-                    state = rememberMarkerState(position = LatLng(-34.0, 151.0)),
-                    title = "Marker in Sydney"
+                    state = rememberMarkerState(position = LatLng(latitude, longitude)),
+                    title = "Event Location"
                 )
             }
             user.value?.let { currentUser ->
-                TrackLocationAndUpdateFirestore(context, currentUser.email)
+                TrackLocationAndUpdateFirestore(context, currentUser.email, userLatitude, userLongitude)
             }
         } else {
             Text(
@@ -101,15 +102,15 @@ fun MapScreen() {
 
 @SuppressLint("MissingPermission")
 @Composable
-fun TrackLocationAndUpdateFirestore(context: android.content.Context, userEmail: String) {
+fun TrackLocationAndUpdateFirestore(context: android.content.Context, userEmail: String, userLatitude: MutableState<Double?>, userLongitude: MutableState<Double?>) {
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
     val db = Firebase.firestore
 
     LaunchedEffect(Unit) {
-        val locationRequest = LocationRequest.create().apply {
+        val locationRequest = com.google.android.gms.location.LocationRequest.create().apply {
             interval = 10000
             fastestInterval = 5000
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            priority = com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
         }
 
         val locationCallback = object : com.google.android.gms.location.LocationCallback() {
@@ -117,6 +118,8 @@ fun TrackLocationAndUpdateFirestore(context: android.content.Context, userEmail:
                 locationResult ?: return
                 for (location in locationResult.locations) {
                     val latLng = LatLng(location.latitude, location.longitude)
+                    userLatitude.value = location.latitude
+                    userLongitude.value = location.longitude
                     db.collection("users").whereEqualTo("email", userEmail).get()
                         .addOnSuccessListener { documents ->
                             for (document in documents) {
