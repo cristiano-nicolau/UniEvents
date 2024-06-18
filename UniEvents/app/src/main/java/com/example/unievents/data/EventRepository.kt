@@ -17,8 +17,7 @@ class EventRepository(
         }
         val eventId = db.collection("events").document().id
         event.id = eventId
-        event
-        // Define o organizador do evento com o ID do usuário atual
+        event.organizer = auth.currentUser?.uid ?: ""
         db.collection("events").document(eventId).set(event)
             .addOnSuccessListener {
                 onResult(true)
