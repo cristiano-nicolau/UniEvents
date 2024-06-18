@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -53,6 +54,7 @@ fun TicketScreen(navController: NavController, eventId: String) {
     val userLatitude = remember { mutableStateOf<Double?>(null) }
     val userLongitude = remember { mutableStateOf<Double?>(null) }
     val distance = remember { mutableStateOf<Double?>(null) }
+    val arrowRotation = remember { mutableStateOf(0f) }
 
     LaunchedEffect(eventId) {
         eventRepository.getEvents { events ->
@@ -173,12 +175,12 @@ fun TicketScreen(navController: NavController, eventId: String) {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
-                /*DirectionArrow(
+                DirectionArrow(
                     userLatitude = userLatitude.value,
                     userLongitude = userLongitude.value,
                     eventLatitude = eventDetails.latitude,
-                    eventLongitude = eventDetails.longitude
-                )*/
+                    eventLongitude = eventDetails.longitude,
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
@@ -249,6 +251,8 @@ fun TicketScreen(navController: NavController, eventId: String) {
     }
 }
 
+
+
 fun calculateDistanceIfPossible(event: Event, userLat: Double?, userLon: Double?, distance: MutableState<Double?>) {
     if (userLat != null && userLon != null) {
         distance.value = calculateDistance(
@@ -276,8 +280,7 @@ fun formatDistance(distance: Double): String {
     return if (distance < 1000) {
         "${distance.toInt()} meters away"
     } else {
-        //String.format("%.2f km away", distance / 1000)
-        "${distance.toInt()} meters away"
+        String.format("%.2f km away", distance / 1000)
     }
 }
 
