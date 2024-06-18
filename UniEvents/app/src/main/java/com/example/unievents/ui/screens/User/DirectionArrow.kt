@@ -1,5 +1,5 @@
 package com.example.unievents.ui.screens.User
-/*
+
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -54,9 +54,9 @@ fun DirectionArrow(
         val rotationVectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
         sensorManager.registerListener(sensorEventListener, rotationVectorSensor, SensorManager.SENSOR_DELAY_UI)
 
-        onDispose {
+        /*onDispose {
             sensorManager.unregisterListener(sensorEventListener)
-        }
+        }*/
     }
 
     val rotation = (bearing - azimuth.value).toFloat()
@@ -82,4 +82,3 @@ fun calculateBearing(userLat: Double?, userLon: Double?, eventLat: Double, event
     }
     return userLocation.bearingTo(eventLocation)
 }
-*/
