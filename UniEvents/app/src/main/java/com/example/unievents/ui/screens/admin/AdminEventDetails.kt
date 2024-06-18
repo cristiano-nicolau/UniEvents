@@ -1,5 +1,10 @@
 package com.example.unievents.ui.screens.admin
 
+import android.app.Activity
+import android.content.Intent
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
+import com.example.unievents.QRCodeScannerActivity
 import com.example.unievents.R
 import com.example.unievents.data.Event
 import com.example.unievents.data.EventRepository
@@ -47,6 +53,29 @@ fun AdminEventDetails(navController: NavController ,eventId: String) {
         }
         ticketRepository.getTicketsForEvent(eventId) { ticketList ->
             attendees.value = ticketList
+        }
+    }
+
+    val context = LocalContext.current
+    val qrCodeLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val qrCode = result.data?.getStringExtra("QR_CODE")
+            qrCode?.let {
+
+                Toast.makeText(context, "QR Code Scanned: $qrCode", Toast.LENGTH_LONG).show()
+                ticketRepository.validateTicket(qrCode) { isValid ->
+                    if (isValid) {
+                        Toast.makeText(context, "Ticket validado com sucesso!", Toast.LENGTH_LONG).show()
+                    } else {
+                        Toast.makeText(context, "Falha na validação do ticket.", Toast.LENGTH_LONG).show()
+                    }
+                }
+                navController.popBackStack()
+            }
+        } else {
+            Toast.makeText(context, "Falha ao ler o QR code.", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -102,8 +131,8 @@ fun AdminEventDetails(navController: NavController ,eventId: String) {
 
                 Button(
                     onClick = {
-                        //  val intent = Intent(LocalContext.current, QrCodeScannerActivity::class.java)
-                        //LocalContext.current.startActivity(intent)
+                        val intent = Intent(context, QRCodeScannerActivity::class.java)
+                        qrCodeLauncher.launch(intent)
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)

@@ -74,6 +74,7 @@ dependencies {
     implementation ("androidx.work:work-runtime-ktx:2.7.1")
     implementation ("androidx.core:core-ktx:1.7.0")
     implementation ("com.google.android.material:material:1.4.0")
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation(libs.androidx.camera.core)
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.vision.common)
