@@ -8,7 +8,7 @@ data class Event(
     val date: String = "",
     val time: String = "",
     val location: String = "",
-    val organizer: String = "",
+    var organizer: String = "",
     val description: String = "",
     val capacity: Int = 0,
     val attendees: List<String> = emptyList(),

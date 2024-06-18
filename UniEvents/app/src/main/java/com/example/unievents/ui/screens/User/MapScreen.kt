@@ -1,9 +1,9 @@
-package com.example.unievents.ui.screens
+package com.example.unievents.ui.screens.User
 
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.location.Location
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
@@ -32,8 +32,6 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import kotlinx.coroutines.launch
 import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationResult
 
 
 @Composable
@@ -131,12 +129,12 @@ fun TrackLocationAndUpdateFirestore(context: android.content.Context, userEmail:
                                         // Handle success
                                     }
                                     .addOnFailureListener { e ->
-                                        // Handle failure
+                                        Toast.makeText(context, "Error updating document: $e", Toast.LENGTH_SHORT).show()
                                     }
                             }
                         }
                         .addOnFailureListener { e ->
-                            // Handle failure
+                            Toast.makeText(context, "Error getting documents: $e", Toast.LENGTH_SHORT).show()
                         }
                 }
             }

@@ -8,4 +8,6 @@ data class Ticket(
     val userId: String = "",
     val qrCode: String = "",
     val status: String = "unused"
-)
+) {
+    lateinit var email: String
+}

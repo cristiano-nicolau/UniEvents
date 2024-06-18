@@ -1,6 +1,5 @@
-package com.example.unievents.ui.screens
+package com.example.unievents.ui.screens.User
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,11 +18,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import android.widget.Toast
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.text.style.TextAlign
 import com.example.unievents.R
 import com.example.unievents.data.Event
 import com.example.unievents.data.EventRepository
 import com.example.unievents.data.TicketRepository
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,8 +35,7 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
     val isSubscribed = remember { mutableStateOf(false) }
     val showConfirmationDialog = remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val showQrCodeDialog = remember { mutableStateOf(false) }
-    val qrCodeBitmap = remember { mutableStateOf<Bitmap?>(null) }
+
 
     LaunchedEffect(eventId) {
         eventRepository.getEvents { events ->
@@ -77,7 +77,8 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                 Text(
                     text = eventDetails.name,
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    textAlign = TextAlign.Center,
+
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
@@ -90,15 +91,15 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = eventDetails.date,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp)
                     )
                     Text(
                         text = " | ",
-                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp)
                     )
                     Text(
                         text = eventDetails.time,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp)
                     )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -112,7 +113,7 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = eventDetails.location,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp)
                     )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -126,7 +127,7 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = eventDetails.organizer,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp)
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -148,24 +149,29 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .fillMaxWidth()
-                        .background(Color.LightGray, shape = RoundedCornerShape(8.dp))
-                        .padding(16.dp)
+
+
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(50.dp).background(Color.LightGray, shape = RoundedCornerShape(8.dp))) {
+                        Spacer(modifier = Modifier.width(8.dp))
                         Icon(Icons.Default.Person, contentDescription = "Capacity")
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "Capacity: ${eventDetails.capacity} Users",
                             style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
                         )
+                        Spacer(modifier = Modifier.width(8.dp))
                     }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(50.dp).background(Color.LightGray, shape = RoundedCornerShape(8.dp))) {
+                        Spacer(modifier = Modifier.width(8.dp))
                         Icon(Icons.Default.Person, contentDescription = "Going")
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "+${eventDetails.attendeesCount} Going",
                             style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
                         )
+                        Spacer(modifier = Modifier.width(8.dp))
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -173,25 +179,20 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                 if (isSubscribed.value) {
                     Button(
                         onClick = {
-                            // Retrieve the ticket to get the QR code Base64 string
-                            ticketRepository.getTicket(eventDetails.id) { ticket ->
-                                if (ticket != null) {
-                                    qrCodeBitmap.value = ticketRepository.base64ToBitmap(ticket.qrCode)
-                                    showQrCodeDialog.value = true
-                                } else {
-                                    Toast.makeText(context, "Failed to retrieve ticket", Toast.LENGTH_SHORT).show()
-                                }
-                            }
+                            navController.navigate("myTicket/${eventDetails.id}")
                         },
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .padding(horizontal = 16.dp)
                             .fillMaxWidth()
-                            .background( MaterialTheme.colorScheme.secondary,RoundedCornerShape(8.dp)),
+                            .background(
+                                MaterialTheme.colorScheme.secondary,
+                                RoundedCornerShape(8.dp)
+                            ),
                           colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
 
                     ) {
-                        Text("SHOW TICKET", style = MaterialTheme.typography.bodyLarge.copy(color = Color.White))
+                        Text("SEE TICKET", style = MaterialTheme.typography.bodyLarge.copy(color = Color.White))
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                 }
@@ -199,37 +200,22 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                 Button(
                     onClick = {
                         showConfirmationDialog.value = true
+
                     },
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(horizontal = 16.dp)
                         .fillMaxWidth()
-                        .background( if (isSubscribed.value) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary,RoundedCornerShape(8.dp)),
+                        .background(
+                            if (isSubscribed.value) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary,
+                            RoundedCornerShape(8.dp)
+                        ),
                     colors = ButtonDefaults.buttonColors(containerColor = if (isSubscribed.value) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary)
                 ) {
                     Text(if (isSubscribed.value) "UNSUBSCRIBE" else "SUBSCRIBE", style = MaterialTheme.typography.bodyLarge.copy(color = Color.White))
                 }
 
-                if (showQrCodeDialog.value) {
-                    AlertDialog(
-                        onDismissRequest = { showQrCodeDialog.value = false },
-                        title = { Text("Your Ticket QR Code") },
-                        text = {
-                            qrCodeBitmap.value?.let {
-                                Image(
-                                    bitmap = it.asImageBitmap(),
-                                    contentDescription = "QR Code",
-                                    modifier = Modifier.size(200.dp)
-                                )
-                            } ?: Text("QR Code could not be generated")
-                        },
-                        confirmButton = {
-                            Button(onClick = { showQrCodeDialog.value = false }) {
-                                Text("Close")
-                            }
-                        }
-                    )
-                }
+
 
                 if (showConfirmationDialog.value) {
                     AlertDialog(
@@ -248,7 +234,12 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                         },
                         confirmButton = {
                             TextButton(
-                                modifier = Modifier.weight(5f).background( if (isSubscribed.value) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(12.dp)),
+                                modifier = Modifier
+                                    .weight(5f)
+                                    .background(
+                                        if (isSubscribed.value) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(12.dp)
+                                    ),
                                 colors = ButtonDefaults.buttonColors(containerColor  = if (isSubscribed.value) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary),
                                 onClick = {
                                     if (isSubscribed.value) {
@@ -266,7 +257,7 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                                             if (ticket) {
                                                 Toast.makeText(context, "Subscribed successfully!", Toast.LENGTH_SHORT).show()
                                                 isSubscribed.value = true
-                                            } else {
+                                                } else {
                                                 Toast.makeText(context, "Subscription failed!", Toast.LENGTH_SHORT).show()
                                             }
                                             showConfirmationDialog.value = false
@@ -279,7 +270,9 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                         },
                         dismissButton = {
                             TextButton(
-                                modifier = Modifier.weight(5f).background( Color.LightGray, shape = RoundedCornerShape(12.dp)),
+                                modifier = Modifier
+                                    .weight(5f)
+                                    .background(Color.LightGray, shape = RoundedCornerShape(12.dp)),
                                 colors = ButtonDefaults.buttonColors(contentColor  = if (isSubscribed.value) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary, containerColor = Color.LightGray),
                                 onClick = { showConfirmationDialog.value = false }
                             ) {
@@ -291,5 +284,25 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                 }
             }
         }
+    }
+}
+
+
+
+fun convertDateTimeToMillis(dateTime: String, time: String): Long {
+    // Remover espaços em branco do time e pegar apenas a parte antes do "-"
+    val timeRange = time.trim().substringBefore("-")
+
+    val dateTimeString = "$dateTime $timeRange"
+
+    // Definir o formato do SimpleDateFormat com Locale para Português de Portugal (pt-PT)
+    val sdf = SimpleDateFormat("dd MMMM yyyy HH:mm", Locale("pt", "PT"))
+
+    return try {
+        val date = sdf.parse(dateTimeString)
+        date?.time ?: 0
+    } catch (e: Exception) {
+        e.printStackTrace()
+        0
     }
 }

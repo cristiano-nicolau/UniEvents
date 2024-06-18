@@ -4,15 +4,21 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
 
 class EventRepository(
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance(),
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 ) {
-    /*fun createEvent(event: Event, onResult: (Boolean) -> Unit) {
+    fun createEvent(event: Event, onResult: (Boolean) -> Unit) {
+        if (event.name.isEmpty() || event.description.isEmpty() || event.date.isEmpty() || event.time.isEmpty() || event.capacity <= 0 || event.location.isEmpty() || event.latitude.isNaN() || event.longitude.isNaN()) {
+            onResult(false)
+            return
+        }
         val eventId = db.collection("events").document().id
         event.id = eventId
-        event.organizer = getCurrentUser()  // Adicione o organizador atual
+        event
+        // Define o organizador do evento com o ID do usuário atual
         db.collection("events").document(eventId).set(event)
             .addOnSuccessListener {
                 onResult(true)
@@ -20,8 +26,8 @@ class EventRepository(
             .addOnFailureListener {
                 onResult(false)
             }
-    }*/
 
+}
     fun getEvents(onResult: (List<Event>) -> Unit) {
         db.collection("events").get()
             .addOnSuccessListener { result ->
@@ -30,7 +36,7 @@ class EventRepository(
                         id = document.id // Define o ID do documento como o ID do evento
                     }
                 }
-                onResult(events)
+                fetchOrganizers(events, onResult)
             }
             .addOnFailureListener { e ->
                 println("Error fetching events: ${e.message}")
@@ -48,5 +54,35 @@ class EventRepository(
                 println("Error fetching event: ${e.message}")
                 onResult(null)
             }
+    }
+
+    private fun fetchOrganizers(events: List<Event>, onResult: (List<Event>) -> Unit) {
+        val eventsWithOrganizers = mutableListOf<Event>()
+        var completedRequests = 0
+
+        for (event in events) {
+            db.collection("users").document(event.organizer).get()
+                .addOnSuccessListener { document ->
+                    event.organizer = document.getString("name") ?: ""
+                    eventsWithOrganizers.add(event)
+                    completedRequests++
+
+                    if (completedRequests == events.size) {
+                        onResult(eventsWithOrganizers)
+                    }
+                }
+                .addOnFailureListener { e ->
+                    println("Error fetching organizer: ${e.message}")
+                    completedRequests++
+
+                    if (completedRequests == events.size) {
+                        onResult(eventsWithOrganizers)
+                    }
+                }
+        }
+
+        if (events.isEmpty()) {
+            onResult(eventsWithOrganizers)
+        }
     }
 }

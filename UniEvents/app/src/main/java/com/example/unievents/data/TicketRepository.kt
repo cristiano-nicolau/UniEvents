@@ -3,6 +3,7 @@ package com.example.unievents.data
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
@@ -120,7 +121,7 @@ class TicketRepository(
     }
 
     private fun fetchEventsByIds(eventIds: List<String>, callback: (List<Event>) -> Unit) {
-        db.collection("events").whereIn(FieldPath.documentId(), eventIds).get()
+        db.collection("events").whereEqualTo(FieldPath.documentId(), eventIds).get()
             .addOnSuccessListener { result ->
                 val events = result.documents.mapNotNull { document ->
                     document.toObject(Event::class.java)?.apply {
@@ -134,6 +135,38 @@ class TicketRepository(
             }
     }
 
+    fun getTicketsForEvent(eventId: String, onResult: (List<Ticket>) -> Unit) {
+        db.collection("tickets")
+            .whereEqualTo("eventId", eventId)
+            .get()
+            .addOnSuccessListener { result ->
+                val tickets = result.documents.mapNotNull { it.toObject(Ticket::class.java) }
+                fetchEmailsForTickets(tickets, onResult)
+
+            }
+            .addOnFailureListener { e ->
+                println("Erro ao buscar tickets: ${e.message}")
+                onResult(emptyList())
+            }
+    }
+
+    private fun fetchEmailsForTickets(tickets: List<Ticket>, onResult: (List<Ticket>) -> Unit) {
+        val userIds = tickets.map { it.userId }
+        db.collection("users").whereIn(FieldPath.documentId(), userIds).get()
+            .addOnSuccessListener { result ->
+                val emails = result.documents.associateBy({ it.id }, { it.getString("email") })
+                tickets.forEach { ticket ->
+                    // adiciona uma variavel email ao ticket
+                    val email = emails[ticket.userId]
+                    ticket.email = email ?: "unknown"
+                }
+                onResult(tickets)
+            }
+            .addOnFailureListener { e ->
+                println("Erro ao buscar emails: ${e.message}")
+                onResult(tickets)
+            }
+    }
 
     fun validateTicket(ticketId: String, onResult: (Boolean) -> Unit) {
         db.collection("tickets").document(ticketId).get()
@@ -143,8 +176,16 @@ class TicketRepository(
                     db.runTransaction { transaction ->
                         val eventRef = db.collection("events").document(ticket.eventId)
                         val eventSnapshot = transaction.get(eventRef)
-                        val attendeesCount = eventSnapshot.getLong("attendeesCount") ?: 0
-                        transaction.update(eventRef, "attendeesCount", attendeesCount + 1)
+                        transaction.update(document.reference, "status", "using")
+                    }.addOnSuccessListener {
+                        onResult(true)
+                    }.addOnFailureListener {
+                        onResult(false)
+                    }
+                } else if (ticket.status == "using") {
+                    db.runTransaction { transaction ->
+                        val eventRef = db.collection("events").document(ticket.eventId)
+                        val eventSnapshot = transaction.get(eventRef)
                         transaction.update(document.reference, "status", "used")
                     }.addOnSuccessListener {
                         onResult(true)
@@ -154,6 +195,7 @@ class TicketRepository(
                 } else {
                     onResult(false)
                 }
+
             }
             .addOnFailureListener {
                 onResult(false)
@@ -180,5 +222,7 @@ class TicketRepository(
         val decodedBytes = Base64.decode(base64Str, Base64.DEFAULT)
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
     }
+
+
 
 }

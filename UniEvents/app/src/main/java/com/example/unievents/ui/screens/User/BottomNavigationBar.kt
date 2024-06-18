@@ -1,16 +1,9 @@
-package com.example.unievents.ui.screens
+package com.example.unievents.ui.screens.User
 
-import android.graphics.Rect
-import android.graphics.drawable.shapes.Shape
-import android.health.connect.datatypes.units.Percentage
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -19,11 +12,9 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -37,7 +28,6 @@ fun BottomNavigationBar(navController: NavController) {
         BottomNavItem("Home", Icons.Default.Home, "userHome"),
         BottomNavItem("My Tickets", Icons.Default.DateRange, "userSubscriptions"),
         BottomNavItem("Profile", Icons.Default.Person, "userProfile"),
-        BottomNavItem("Map", Icons.Default.Person, "map")
     )
 
     NavigationBar(

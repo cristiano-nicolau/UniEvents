@@ -35,6 +35,11 @@ class AuthRepository(
             }
     }
 
+    fun logoutUser(onResult: (Boolean) -> Unit) {
+        auth.signOut()
+        onResult(true)
+    }
+
     fun loginUser(navController: NavController, email: String, password: String, onResult: (Boolean) -> Unit) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
@@ -76,6 +81,17 @@ class AuthRepository(
             }
             .addOnFailureListener {
                 onResult(null)
+            }
+    }
+
+    fun updateUser(user: User, onResult: (Boolean) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return onResult(false)
+        db.collection("users").document(userId).set(user)
+            .addOnSuccessListener {
+                onResult(true)
+            }
+            .addOnFailureListener {
+                onResult(false)
             }
     }
 }
