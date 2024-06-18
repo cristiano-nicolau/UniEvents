@@ -111,6 +111,7 @@ class TicketRepository(
                 val eventIds = tickets.map { it.eventId }
                 if (eventIds.isNotEmpty()) {
                     fetchEventsByIds(eventIds, callback)
+
                 } else {
                     callback(emptyList())
                 }
@@ -121,14 +122,14 @@ class TicketRepository(
     }
 
     private fun fetchEventsByIds(eventIds: List<String>, callback: (List<Event>) -> Unit) {
-        db.collection("events").whereEqualTo(FieldPath.documentId(), eventIds).get()
+        db.collection("events").whereIn(FieldPath.documentId(), eventIds).get()
             .addOnSuccessListener { result ->
                 val events = result.documents.mapNotNull { document ->
                     document.toObject(Event::class.java)?.apply {
                         id = document.id
                     }
                 }
-                callback(events)
+                EventRepository().fetchOrganizers(events, callback)
             }
             .addOnFailureListener {
                 callback(emptyList())

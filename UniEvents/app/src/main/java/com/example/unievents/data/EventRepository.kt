@@ -56,7 +56,7 @@ class EventRepository(
             }
     }
 
-    private fun fetchOrganizers(events: List<Event>, onResult: (List<Event>) -> Unit) {
+    fun fetchOrganizers(events: List<Event>, onResult: (List<Event>) -> Unit) {
         val eventsWithOrganizers = mutableListOf<Event>()
         var completedRequests = 0
 
