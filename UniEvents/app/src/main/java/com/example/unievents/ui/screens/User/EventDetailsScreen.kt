@@ -1,5 +1,6 @@
 package com.example.unievents.ui.screens.User
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -26,6 +27,13 @@ import com.example.unievents.data.TicketRepository
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
+import com.example.unievents.NotificationWorker
+import java.util.concurrent.TimeUnit
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventDetailsScreen(navController: NavController, eventId: String) {
@@ -45,6 +53,7 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
             isSubscribed.value = subscribed
         }
     }
+
 
     Scaffold(
         topBar = {
@@ -257,7 +266,10 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
                                             if (ticket) {
                                                 Toast.makeText(context, "Subscribed successfully!", Toast.LENGTH_SHORT).show()
                                                 isSubscribed.value = true
-                                                } else {
+
+                                                scheduleEventNotification(context, eventDetails.name, eventDetails.date, eventDetails.time)
+
+                                            } else {
                                                 Toast.makeText(context, "Subscription failed!", Toast.LENGTH_SHORT).show()
                                             }
                                             showConfirmationDialog.value = false
@@ -287,22 +299,36 @@ fun EventDetailsScreen(navController: NavController, eventId: String) {
     }
 }
 
+fun scheduleEventNotification(context: Context, eventName: String, eventDate: String, eventTime: String) {
+    val inputDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+    val outputDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
+    val formattedDate = inputDateFormat.parse(eventDate)?.let { outputDateFormat.format(it) } ?: return
 
-fun convertDateTimeToMillis(dateTime: String, time: String): Long {
-    // Remover espaços em branco do time e pegar apenas a parte antes do "-"
-    val timeRange = time.trim().substringBefore("-")
+    val startTime = eventTime.split(" - ")[0]
 
-    val dateTimeString = "$dateTime $timeRange"
+    val eventDateTime = "$formattedDate $startTime"
+    val eventTimeMillis = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).parse(eventDateTime)?.time ?: return
 
-    // Definir o formato do SimpleDateFormat com Locale para Português de Portugal (pt-PT)
-    val sdf = SimpleDateFormat("dd MMMM yyyy HH:mm", Locale("pt", "PT"))
+    val notificationTime = eventTimeMillis - TimeUnit.MINUTES.toMillis(30)
+    val delay = notificationTime - System.currentTimeMillis()
 
-    return try {
-        val date = sdf.parse(dateTimeString)
-        date?.time ?: 0
-    } catch (e: Exception) {
-        e.printStackTrace()
-        0
+    if (delay > 0) {
+        val data = Data.Builder()
+            .putString("event_name", eventName)
+            .putInt("notification_id", eventTimeMillis.hashCode())
+            .build()
+
+        val notificationWork: WorkRequest = OneTimeWorkRequestBuilder<NotificationWorker>()
+            .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+            .setInputData(data)
+            .build()
+
+        WorkManager.getInstance(context).enqueue(notificationWork)
     }
 }
+
+
+
+
+
