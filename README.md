@@ -1,6 +1,6 @@
 # UniEvents
 
-UniEvents is a mobile application designed to streamline the event attendance experience for university students and event coordinators. Users can browse upcoming lectures and seminars, access event details, and register for events. The app features integrated mapping for easy navigation and digital ticketing for efficient check-ins.
+UniEvents is a mobile application designed to streamline the event attendance experience for university students and event coordinators. Users can browse upcoming lectures and seminars, access event details, and register for events. The app features integrated mapping for easy navigation and digital ticketing for efficient check-ins. Click here to sse the demo.
 
 ## Features
 
@@ -48,7 +48,18 @@ UniEvents is a mobile application designed to streamline the event attendance ex
 2. Open the project in Android Studio.
 3. Build and run the project on an emulator or physical device.
 
+
+
+## Links
+
+- [Demo Video](https://youtu.be/uurvzu-DSVE) 
+- [Documentation](#) 
+- [Figma Project](#) 
+
+
 ## Contributors
 
-- Miguel Aido Miragaia - 108317
-- Cristiano Antunes Nicolau - 108536
+| NMec | Name | email | 
+|:---: |:---|:---|:---:|
+| 108317 | Miguel Aido Miragaia         | [miguelmiragaia@ua.pt](https://github.com/Miragaia)              |   
+| 108536 | Cristiano Antunes Nicolau    | [cristianonicolau@ua.pt](https://github.com/cristiano-nicolau)   |   
