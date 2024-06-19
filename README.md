@@ -60,6 +60,6 @@ UniEvents is a mobile application designed to streamline the event attendance ex
 ## Contributors
 
 | NMec | Name | email | 
-|:---: |:---|:---|:---:|
+|:---: |:---|:---|
 | 108317 | Miguel Aido Miragaia         | [miguelmiragaia@ua.pt](https://github.com/Miragaia)              |   
 | 108536 | Cristiano Antunes Nicolau    | [cristianonicolau@ua.pt](https://github.com/cristiano-nicolau)   |   
