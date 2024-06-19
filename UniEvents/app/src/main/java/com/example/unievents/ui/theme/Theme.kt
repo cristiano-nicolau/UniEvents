@@ -30,13 +30,14 @@ private val LightColorScheme = lightColorScheme(
     onSecondary = OnSecondaryColor,
     onBackground = OnBackgroundColor,
     onSurface = OnSurfaceColor,
+    error = ErrorColor,
 )
 
 @Composable
 fun UniEventsTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -45,7 +46,7 @@ fun UniEventsTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
+        darkTheme -> LightColorScheme
         else -> LightColorScheme
     }
     val view = LocalView.current
@@ -58,7 +59,7 @@ fun UniEventsTheme(
     }
 
     MaterialTheme(
-        colorScheme = LightColorScheme,
+        colorScheme = colorScheme,
         typography = Typography,
         content = content
     )
