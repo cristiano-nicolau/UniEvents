@@ -54,7 +54,7 @@ UniEvents is a mobile application designed to streamline the event attendance ex
 
 - [Demo Video](https://youtu.be/uurvzu-DSVE) 
 - [Documentation](#) 
-- [Figma Project](#) 
+- [Figma Project](https://github.com/Miragaia/UniEvents/tree/main/docs/figma) 
 
 
 ## Contributors
