@@ -153,7 +153,7 @@ fun UserProfile(navController: NavController) {
                     color = Color.White
                 )
             }
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Button(
                     onClick = {
                         authRepository.logoutUser {
@@ -164,7 +164,7 @@ fun UserProfile(navController: NavController) {
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp),
+                        .height(36.dp),
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
 

@@ -111,7 +111,7 @@ fun SectionTitle(title: String, navController: NavController) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(title, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+        Text(title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
         TextButton(onClick = {  navController.navigate("allEvents")}) {
             Text("Show All",fontWeight = FontWeight.Bold, color = Color.Gray)
         }
